@@ -1,0 +1,258 @@
+/* ==========================================================
+   CÓNDOR IRON GYM · hoja de estilos del sistema
+   Identidad: piedra volcánica + ámbar de altura.
+   Sin frameworks: todo escrito a mano.
+   ========================================================== */
+
+:root{
+  --roca-900:#0b0d0c;
+  --roca-800:#141816;
+  --roca-700:#1c211e;
+  --roca-600:#2a312d;
+  --roca-500:#3c4540;
+  --niebla:#98a29b;
+  --hueso:#eef1ec;
+
+  --ambar:#f2a007;
+  --ambar-osc:#c07d00;
+  --musgo:#7ba640;
+  --sangre:#d2422f;
+  --hielo:#4b9fc4;
+
+  --borde:1px solid var(--roca-600);
+  --radio:2px;
+  --mono:"SFMono-Regular",ui-monospace,"JetBrains Mono",Menlo,monospace;
+  --sans:"Inter",-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:var(--sans);
+  background:var(--roca-900);
+  color:var(--hueso);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  font-size:14px;
+}
+
+/* textura sutil de fondo: lineas topograficas */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:0;
+  background-image:repeating-linear-gradient(115deg,var(--ambar) 0 1px,transparent 1px 46px);
+}
+
+a{color:var(--ambar);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------------------- Marca ---------------------- */
+.marca{display:flex;align-items:center;gap:.7rem;user-select:none}
+.marca .glifo{
+  width:34px;height:34px;flex:none;
+  border:2px solid var(--ambar);
+  display:grid;place-items:center;
+  transform:rotate(45deg);
+}
+.marca .glifo span{transform:rotate(-45deg);font-family:var(--mono);font-weight:700;color:var(--ambar);font-size:15px}
+.marca h1{
+  font-size:1rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;line-height:1.1;
+}
+.marca small{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.3em;color:var(--niebla);font-weight:400}
+
+/* ---------------------- Login ---------------------- */
+.pantalla-acceso{
+  min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr;position:relative;z-index:1;
+}
+.lado-arte{
+  background:
+    radial-gradient(90% 70% at 20% 10%,rgba(242,160,7,.16),transparent 60%),
+    linear-gradient(160deg,var(--roca-800),var(--roca-900));
+  border-right:var(--borde);
+  padding:3.5rem;display:flex;flex-direction:column;justify-content:space-between;
+}
+.lado-arte .lema{font-size:3.2rem;font-weight:800;line-height:.98;letter-spacing:-.03em;max-width:11ch}
+.lado-arte .lema em{font-style:normal;color:var(--ambar);display:block}
+.lado-arte .nota{font-family:var(--mono);font-size:.72rem;color:var(--niebla);line-height:1.9;letter-spacing:.06em}
+.cotas{display:flex;gap:2.5rem;margin-top:2rem}
+.cota b{display:block;font-size:1.7rem;color:var(--ambar);font-weight:800}
+.cota span{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;color:var(--niebla);text-transform:uppercase}
+
+.lado-forma{display:grid;place-items:center;padding:2rem}
+.tarjeta-acceso{width:100%;max-width:352px}
+.tarjeta-acceso h2{font-size:1.5rem;font-weight:700;margin:2.2rem 0 .35rem;letter-spacing:-.01em}
+.tarjeta-acceso p.sub{color:var(--niebla);font-size:.82rem;margin-bottom:1.8rem}
+
+/* ---------------------- Formularios ---------------------- */
+.campo{margin-bottom:1rem}
+.campo label{
+  display:block;font-family:var(--mono);font-size:.63rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--niebla);margin-bottom:.42rem;
+}
+.campo input,.campo select,.campo textarea{
+  width:100%;padding:.66rem .8rem;background:var(--roca-800);
+  border:var(--borde);border-radius:var(--radio);color:var(--hueso);
+  font-family:inherit;font-size:.88rem;transition:border-color .15s,background .15s;
+}
+.campo input:focus,.campo select:focus,.campo textarea:focus{
+  outline:none;border-color:var(--ambar);background:var(--roca-700);
+}
+.campo input::placeholder{color:var(--roca-500)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:.68rem 1.15rem;border:none;border-radius:var(--radio);
+  background:var(--ambar);color:var(--roca-900);
+  font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+  transition:background .15s,transform .05s;
+}
+.btn:hover{background:#ffb524}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ancho{width:100%}
+.btn.fantasma{background:transparent;border:var(--borde);color:var(--hueso)}
+.btn.fantasma:hover{border-color:var(--ambar);color:var(--ambar);background:transparent}
+.btn.peligro{background:var(--sangre);color:#fff}
+.btn.peligro:hover{background:#e8543f}
+.btn.mini{padding:.34rem .6rem;font-size:.62rem;letter-spacing:.08em}
+
+.aviso{
+  padding:.68rem .85rem;border-radius:var(--radio);font-size:.82rem;margin-bottom:1rem;
+  border-left:3px solid;display:none;
+}
+.aviso.error{display:block;background:rgba(210,66,47,.12);border-color:var(--sangre);color:#ff9f90}
+.aviso.exito{display:block;background:rgba(123,166,64,.12);border-color:var(--musgo);color:#b8dd7d}
+
+.pista{
+  margin-top:1.6rem;padding:.8rem;border:1px dashed var(--roca-600);border-radius:var(--radio);
+  font-family:var(--mono);font-size:.68rem;color:var(--niebla);line-height:1.8;
+}
+.pista b{color:var(--ambar);font-weight:600}
+
+/* ---------------------- Estructura del panel ---------------------- */
+.app{display:grid;grid-template-columns:210px 1fr;min-height:100vh;position:relative;z-index:1}
+
+.lateral{
+  background:var(--roca-800);border-right:var(--borde);
+  padding:1.5rem 0;display:flex;flex-direction:column;
+}
+.lateral .marca{padding:0 1.2rem 1.6rem}
+.menu{list-style:none;flex:1}
+.menu li a{
+  display:flex;align-items:center;gap:.7rem;padding:.62rem 1.2rem;
+  color:var(--niebla);font-size:.83rem;font-weight:500;
+  border-left:3px solid transparent;transition:.15s;
+}
+.menu li a:hover{color:var(--hueso);background:var(--roca-700)}
+.menu li a.activo{color:var(--ambar);border-left-color:var(--ambar);background:var(--roca-700)}
+.menu .icono{width:16px;text-align:center;font-size:.9rem;opacity:.85}
+.menu .grupo{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:var(--roca-500);
+  text-transform:uppercase;padding:1.1rem 1.2rem .4rem;
+}
+.pie-lateral{padding:1rem 1.2rem 0;border-top:var(--borde);margin-top:1rem}
+.pie-lateral .quien{font-size:.8rem;font-weight:600}
+.pie-lateral .rol{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--ambar);text-transform:uppercase;margin-bottom:.7rem}
+
+.contenido{padding:1.8rem 2.2rem;overflow-x:auto}
+.cabecera-vista{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.6rem;gap:1rem;flex-wrap:wrap}
+.cabecera-vista h2{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}
+.cabecera-vista .ruta{font-family:var(--mono);font-size:.63rem;letter-spacing:.16em;color:var(--niebla);text-transform:uppercase;margin-bottom:.3rem}
+
+/* ---------------------- Tarjetas de indicadores ---------------------- */
+.rejilla{display:grid;gap:1rem}
+.rejilla.k4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.rejilla.k2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+
+.panelito{
+  background:var(--roca-800);border:var(--borde);border-radius:var(--radio);padding:1.15rem;
+}
+.panelito h3{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--niebla);font-weight:500;margin-bottom:.9rem;
+}
+.indicador{position:relative;overflow:hidden}
+.indicador::after{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ambar)}
+.indicador.verde::after{background:var(--musgo)}
+.indicador.rojo::after{background:var(--sangre)}
+.indicador.azul::after{background:var(--hielo)}
+.indicador .cifra{font-size:2.3rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.indicador .etiqueta{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--niebla);margin-top:.45rem}
+.indicador .detalle{font-size:.72rem;color:var(--roca-500);margin-top:.3rem}
+
+/* ---------------------- Tablas ---------------------- */
+.tabla-envoltura{background:var(--roca-800);border:var(--borde);border-radius:var(--radio);overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{
+  text-align:left;padding:.7rem .9rem;background:var(--roca-700);
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--niebla);font-weight:500;white-space:nowrap;
+  border-bottom:var(--borde);
+}
+tbody td{padding:.66rem .9rem;border-bottom:1px solid var(--roca-700);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--roca-700)}
+td.acciones{white-space:nowrap;display:flex;gap:.32rem}
+.vacio{padding:2.4rem;text-align:center;color:var(--roca-500);font-family:var(--mono);font-size:.75rem;letter-spacing:.1em}
+
+/* ---------------------- Etiquetas de estado ---------------------- */
+.chip{
+  display:inline-block;padding:.16rem .5rem;border-radius:var(--radio);
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+  border:1px solid;
+}
+.chip.activa,.chip.activo,.chip.permitida{color:var(--musgo);border-color:rgba(123,166,64,.45);background:rgba(123,166,64,.1)}
+.chip.vencida,.chip.rechazada,.chip.inactivo{color:var(--sangre);border-color:rgba(210,66,47,.45);background:rgba(210,66,47,.1)}
+.chip.cancelada,.chip.sin_membresia{color:var(--niebla);border-color:var(--roca-600);background:var(--roca-700)}
+.chip.aviso{color:var(--ambar);border-color:rgba(242,160,7,.45);background:rgba(242,160,7,.1)}
+
+/* ---------------------- Barras del grafico ---------------------- */
+.barras{display:flex;align-items:flex-end;gap:.6rem;height:130px;padding-top:.5rem}
+.barra{flex:1;display:flex;flex-direction:column;align-items:center;gap:.45rem;height:100%;justify-content:flex-end}
+.barra .tallo{width:100%;background:linear-gradient(180deg,var(--ambar),var(--ambar-osc));border-radius:var(--radio) var(--radio) 0 0;min-height:3px;transition:height .4s ease}
+.barra .dia{font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;color:var(--niebla);text-transform:uppercase}
+.barra .val{font-family:var(--mono);font-size:.65rem;color:var(--hueso);font-weight:600}
+
+/* ---------------------- Control de acceso ---------------------- */
+.torniquete{max-width:520px}
+.lector{display:flex;gap:.6rem;align-items:flex-end}
+.lector .campo{flex:1;margin:0}
+.veredicto{margin-top:1.3rem;border:2px solid;border-radius:var(--radio);padding:1.3rem;display:none}
+.veredicto.si{display:block;border-color:var(--musgo);background:rgba(123,166,64,.07)}
+.veredicto.no{display:block;border-color:var(--sangre);background:rgba(210,66,47,.07)}
+.veredicto .titular{font-size:1.35rem;font-weight:800;letter-spacing:-.01em;margin-bottom:.35rem}
+.veredicto.si .titular{color:var(--musgo)}
+.veredicto.no .titular{color:var(--sangre)}
+.veredicto .linea{font-size:.83rem;color:var(--niebla);margin-top:.22rem}
+.veredicto .linea b{color:var(--hueso);font-weight:600}
+
+/* ---------------------- Modal ---------------------- */
+.velo{
+  position:fixed;inset:0;background:rgba(5,7,6,.82);backdrop-filter:blur(3px);
+  display:none;place-items:center;z-index:50;padding:1.5rem;
+}
+.velo.abierto{display:grid}
+.modal{
+  background:var(--roca-800);border:var(--borde);border-radius:var(--radio);
+  width:100%;max-width:520px;max-height:88vh;overflow:auto;
+}
+.modal header{padding:1.1rem 1.3rem;border-bottom:var(--borde);display:flex;justify-content:space-between;align-items:center}
+.modal header h3{font-size:1.05rem;font-weight:700}
+.modal .cerrar{background:none;border:none;color:var(--niebla);font-size:1.4rem;line-height:1}
+.modal .cuerpo{padding:1.3rem}
+.modal footer{padding:1rem 1.3rem;border-top:var(--borde);display:flex;gap:.6rem;justify-content:flex-end}
+.dos-columnas{display:grid;grid-template-columns:1fr 1fr;gap:0 .9rem}
+
+.vista{display:none}
+.vista.visible{display:block}
+
+/* ---------------------- Responsive ---------------------- */
+@media (max-width:960px){
+  .pantalla-acceso{grid-template-columns:1fr}
+  .lado-arte{display:none}
+  .app{grid-template-columns:1fr}
+  .lateral{position:sticky;top:0;z-index:20}
+  .menu{display:flex;overflow-x:auto}
+  .menu .grupo,.pie-lateral{display:none}
+  .contenido{padding:1.2rem}
+  .dos-columnas{grid-template-columns:1fr}
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi cuenta · Cóndor Iron Gym</title>
+<link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+
+<div class="app" style="grid-template-columns:1fr">
+  <main class="contenido" style="max-width:900px;margin:0 auto;width:100%">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.4rem 0 2rem;border-bottom:1px solid var(--roca-600);margin-bottom:2rem">
+      <div class="marca">
+        <div class="glifo"><span>C</span></div>
+        <h1>Cóndor Iron<small>Portal del socio</small></h1>
+      </div>
+      <button class="btn fantasma mini" id="btnSalir">Cerrar sesión</button>
+    </div>
+
+    <div class="cabecera-vista">
+      <div>
+        <div class="ruta">Mi cuenta</div>
+        <h2>Hola, <span id="miNombre">—</span></h2>
+      </div>
+    </div>
+
+    <div class="panelito indicador" id="estadoActual" style="margin-bottom:1.4rem">
+      <div class="cifra" id="estadoTitulo">—</div>
+      <div class="etiqueta">Estado de mi membresía</div>
+      <div class="detalle" id="estadoDetalle"></div>
+    </div>
+
+    <div class="rejilla k2">
+      <div class="panelito">
+        <h3>Mis membresías</h3>
+        <div class="tabla-envoltura" style="border:none">
+          <table>
+            <thead><tr><th>Plan</th><th>Inicio</th><th>Vence</th><th>Estado</th></tr></thead>
+            <tbody id="tbMias"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panelito">
+        <h3>Mis últimas asistencias</h3>
+        <div class="tabla-envoltura" style="border:none">
+          <table>
+            <thead><tr><th>Fecha</th><th>Resultado</th></tr></thead>
+            <tbody id="tbAsis"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const fecha = f => f ? new Date(f + 'T00:00:00').toLocaleDateString('es-EC',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+const api = async (r, o = {}) => {
+  const res = await fetch(r, { headers: {'Content-Type':'application/json'}, ...o });
+  if (res.status === 401) { location.href = '/login.html'; return null; }
+  return res.json();
+};
+
+(async () => {
+  const s = await api('/api/auth/yo');
+  if (!s) return;
+  $('#miNombre').textContent = s.usuario.nombre;
+
+  const mem = await api('/api/membresias/mias');
+  const vigente = mem.find(m => m.situacion === 'ACTIVA');
+
+  const caja = $('#estadoActual');
+  if (vigente) {
+    caja.className = 'panelito indicador verde';
+    $('#estadoTitulo').textContent = 'ACTIVA';
+    $('#estadoDetalle').innerHTML =
+      `Plan <b>${esc(vigente.tipo)}</b> · vence el ${fecha(vigente.fecha_vencimiento)} — le quedan <b>${vigente.dias_restantes}</b> días.`;
+  } else {
+    caja.className = 'panelito indicador rojo';
+    $('#estadoTitulo').textContent = mem.length ? 'VENCIDA' : 'SIN PLAN';
+    $('#estadoDetalle').textContent = mem.length
+      ? 'Su membresía caducó. Acérquese a recepción para renovarla.'
+      : 'Aún no tiene una membresía asignada.';
+  }
+
+  $('#tbMias').innerHTML = mem.length ? mem.map(m => `
+    <tr><td><b>${esc(m.tipo)}</b></td><td>${fecha(m.fecha_inicio)}</td>
+    <td>${fecha(m.fecha_vencimiento)}</td>
+    <td><span class="chip ${m.situacion.toLowerCase()}">${m.situacion}</span></td></tr>`).join('')
+    : '<tr><td colspan="4"><div class="vacio">Sin membresías</div></td></tr>';
+
+  const asis = await api('/api/asistencias/mias');
+  $('#tbAsis').innerHTML = asis.length ? asis.map(a => `
+    <tr><td style="font-family:var(--mono);font-size:.76rem">${new Date(a.fecha_hora).toLocaleString('es-EC')}</td>
+    <td><span class="chip ${a.resultado.toLowerCase()}">${a.resultado}</span></td></tr>`).join('')
+    : '<tr><td colspan="2"><div class="vacio">Sin asistencias registradas</div></td></tr>';
+})();
+
+$('#btnSalir').addEventListener('click', async () => {
+  await api('/api/auth/logout', { method: 'POST' });
+  location.href = '/login.html';
+});
+</script>
+</body>
+</html>

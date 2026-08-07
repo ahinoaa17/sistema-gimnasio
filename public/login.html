@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acceso · Cóndor Iron Gym</title>
+<link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+
+<main class="pantalla-acceso">
+
+  <!-- Lado izquierdo: identidad de marca -->
+  <section class="lado-arte">
+    <div class="marca">
+      <div class="glifo"><span>C</span></div>
+      <h1>Cóndor Iron<small>Gym · Quito</small></h1>
+    </div>
+
+    <div>
+      <p class="lema">Sube <em>más alto</em> que ayer.</p>
+      <div class="cotas">
+        <div class="cota"><b>4 810</b><span>msnm · Rucu</span></div>
+        <div class="cota"><b>24/7</b><span>Acceso anual</span></div>
+        <div class="cota"><b>5</b><span>Planes</span></div>
+      </div>
+    </div>
+
+    <p class="nota">
+      SISTEMA DE GESTIÓN v1.2<br>
+      BASE DE DATOS · AMAZON RDS / MySQL 8<br>
+      REGIÓN · us-east-1<br>
+      PUCE — Ahinoa Andino
+    </p>
+  </section>
+
+  <!-- Lado derecho: formulario -->
+  <section class="lado-forma">
+    <div class="tarjeta-acceso">
+      <h2>Iniciar sesión</h2>
+      <p class="sub">Ingrese sus credenciales para entrar al sistema.</p>
+
+      <div id="aviso" class="aviso"></div>
+
+      <form id="formAcceso" autocomplete="off">
+        <div class="campo">
+          <label for="usuario">Usuario</label>
+          <input type="text" id="usuario" name="usuario" placeholder="su.usuario" required autofocus>
+        </div>
+        <div class="campo">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" name="password" placeholder="********" required>
+        </div>
+        <button type="submit" class="btn ancho" id="btnEntrar">Entrar</button>
+      </form>
+
+      <div class="pista">
+        CUENTAS DE PRUEBA<br>
+        administrador &rarr; <b>admin</b> / <b>Condor2026*</b><br>
+        cliente &rarr; <b>mrivera</b> / <b>Cliente2026*</b>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const aviso = document.getElementById('aviso');
+const btn   = document.getElementById('btnEntrar');
+
+document.getElementById('formAcceso').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  aviso.className = 'aviso';
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usuario: usuario.value.trim(),
+        password: password.value
+      })
+    });
+    const data = await r.json();
+
+    if (!r.ok) {
+      aviso.className = 'aviso error';
+      aviso.textContent = data.error || 'No se pudo iniciar sesión';
+      password.value = '';
+      return;
+    }
+
+    window.location.href = data.usuario.rol === 'ADMINISTRADOR' ? '/panel.html' : '/cliente.html';
+  } catch {
+    aviso.className = 'aviso error';
+    aviso.textContent = 'No hay conexión con el servidor.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Cóndor Iron Gym</title>
+<link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ Barra lateral ============ -->
+  <aside class="lateral">
+    <div class="marca">
+      <div class="glifo"><span>C</span></div>
+      <h1>Cóndor Iron<small>Panel admin</small></h1>
+    </div>
+
+    <ul class="menu">
+      <li class="grupo">Resumen</li>
+      <li><a href="#" data-vista="tablero" class="activo"><span class="icono">&#9635;</span> Dashboard</a></li>
+
+      <li class="grupo">Operación</li>
+      <li><a href="#" data-vista="clientes"><span class="icono">&#9677;</span> Clientes</a></li>
+      <li><a href="#" data-vista="membresias"><span class="icono">&#9672;</span> Membresías</a></li>
+      <li><a href="#" data-vista="tipos"><span class="icono">&#9636;</span> Tipos de plan</a></li>
+
+      <li class="grupo">Accesos</li>
+      <li><a href="#" data-vista="torniquete"><span class="icono">&#8853;</span> Registrar entrada</a></li>
+      <li><a href="#" data-vista="asistencias"><span class="icono">&#9776;</span> Asistencias</a></li>
+      <li><a href="#" data-vista="bitacora"><span class="icono">&#9919;</span> Bitácora</a></li>
+    </ul>
+
+    <div class="pie-lateral">
+      <div class="quien" id="miNombre">—</div>
+      <div class="rol" id="miRol">—</div>
+      <button class="btn fantasma mini ancho" id="btnSalir">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ============ Contenido ============ -->
+  <main class="contenido">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="vista visible" id="v-tablero">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Dashboard</div>
+          <h2>Estado del gimnasio</h2>
+        </div>
+        <button class="btn fantasma mini" onclick="cargarTablero()">Actualizar</button>
+      </div>
+
+      <div class="rejilla k4" id="indicadores"></div>
+
+      <div class="rejilla k2" style="margin-top:1rem">
+        <div class="panelito">
+          <h3>Asistencias · últimos 7 días</h3>
+          <div class="barras" id="grafico"></div>
+        </div>
+        <div class="panelito">
+          <h3>Próximos vencimientos</h3>
+          <div id="vencimientos"></div>
+        </div>
+      </div>
+
+      <div class="panelito" style="margin-top:1rem">
+        <h3>Membresías activas por plan</h3>
+        <div id="porTipo"></div>
+      </div>
+    </section>
+
+    <!-- ---------- CLIENTES ---------- -->
+    <section class="vista" id="v-clientes">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Clientes</div>
+          <h2>Gestión de clientes</h2>
+        </div>
+        <button class="btn" onclick="abrirCliente()">+ Registrar cliente</button>
+      </div>
+
+      <div class="panelito" style="margin-bottom:1rem">
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+          <div class="campo" style="flex:1;min-width:200px;margin:0">
+            <label>Buscar</label>
+            <input id="buscaCliente" placeholder="Cédula, nombre, apellido o correo...">
+          </div>
+          <div class="campo" style="margin:0">
+            <label>Estado</label>
+            <select id="filtroEstado">
+              <option value="">Todos</option>
+              <option value="ACTIVO">Activos</option>
+              <option value="INACTIVO">Inactivos</option>
+            </select>
+          </div>
+          <button class="btn fantasma" onclick="cargarClientes()">Buscar</button>
+        </div>
+      </div>
+
+      <div class="tabla-envoltura">
+        <table>
+          <thead><tr>
+            <th>Cédula</th><th>Cliente</th><th>Contacto</th>
+            <th>Membresía</th><th>Vence</th><th>Estado</th><th>Acciones</th>
+          </tr></thead>
+          <tbody id="tbClientes"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- MEMBRESÍAS ---------- -->
+    <section class="vista" id="v-membresias">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Membresías</div>
+          <h2>Membresías asignadas</h2>
+        </div>
+        <button class="btn" onclick="abrirAsignar()">+ Asignar membresía</button>
+      </div>
+      <div class="tabla-envoltura">
+        <table>
+          <thead><tr>
+            <th>Cliente</th><th>Cédula</th><th>Plan</th><th>Inicio</th>
+            <th>Vencimiento</th><th>Días</th><th>Situación</th><th>Acciones</th>
+          </tr></thead>
+          <tbody id="tbMembresias"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- TIPOS ---------- -->
+    <section class="vista" id="v-tipos">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Tipos de plan</div>
+          <h2>Tipos de membresía</h2>
+        </div>
+        <button class="btn" onclick="abrirTipo()">+ Crear tipo</button>
+      </div>
+      <div class="tabla-envoltura">
+        <table>
+          <thead><tr><th>Plan</th><th>Descripción</th><th>Duración</th><th>Precio</th><th></th></tr></thead>
+          <tbody id="tbTipos"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- CONTROL DE ACCESO ---------- -->
+    <section class="vista" id="v-torniquete">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Control de acceso</div>
+          <h2>Registrar entrada</h2>
+        </div>
+      </div>
+
+      <div class="panelito torniquete">
+        <h3>Lector de ingreso</h3>
+        <form class="lector" id="formEntrada">
+          <div class="campo">
+            <label>Cédula del cliente</label>
+            <input id="cedulaEntrada" placeholder="1723456789" autocomplete="off">
+          </div>
+          <button class="btn" type="submit">Validar</button>
+        </form>
+
+        <div class="veredicto" id="veredicto">
+          <div class="titular" id="vTitular"></div>
+          <div class="linea" id="vCliente"></div>
+          <div class="linea" id="vMotivo"></div>
+          <div class="linea" id="vHora"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- ASISTENCIAS ---------- -->
+    <section class="vista" id="v-asistencias">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Asistencias</div>
+          <h2>Consulta de asistencias</h2>
+        </div>
+      </div>
+
+      <div class="panelito" style="margin-bottom:1rem">
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+          <div class="campo" style="margin:0"><label>Desde</label><input type="date" id="fDesde"></div>
+          <div class="campo" style="margin:0"><label>Hasta</label><input type="date" id="fHasta"></div>
+          <div class="campo" style="margin:0"><label>Resultado</label>
+            <select id="fResultado">
+              <option value="">Todos</option>
+              <option value="PERMITIDA">Permitidas</option>
+              <option value="RECHAZADA">Rechazadas</option>
+            </select>
+          </div>
+          <button class="btn fantasma" onclick="cargarAsistencias()">Filtrar</button>
+        </div>
+      </div>
+
+      <div class="tabla-envoltura">
+        <table>
+          <thead><tr><th>Fecha y hora</th><th>Cédula</th><th>Cliente</th><th>Resultado</th><th>Observación</th></tr></thead>
+          <tbody id="tbAsistencias"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- BITÁCORA ---------- -->
+    <section class="vista" id="v-bitacora">
+      <div class="cabecera-vista">
+        <div>
+          <div class="ruta">Inicio / Seguridad</div>
+          <h2>Bitácora del sistema</h2>
+        </div>
+      </div>
+      <div class="tabla-envoltura">
+        <table>
+          <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Detalle</th><th>IP</th></tr></thead>
+          <tbody id="tbBitacora"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ Modal ============ -->
+<div class="velo" id="velo">
+  <div class="modal">
+    <header>
+      <h3 id="modalTitulo">Formulario</h3>
+      <button class="cerrar" onclick="cerrarModal()">&times;</button>
+    </header>
+    <div class="cuerpo" id="modalCuerpo"></div>
+    <footer>
+      <button class="btn fantasma" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" id="modalGuardar">Guardar</button>
+    </footer>
+  </div>
+</div>
+
+<script src="/js/panel.js"></script>
+</body>
+</html>
